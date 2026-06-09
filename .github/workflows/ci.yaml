@@ -1,0 +1,75 @@
+# This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
+# For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
+
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [ ros2 ]
+
+jobs:
+  default:
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [ humble, jazzy, rolling ]
+        include:
+          - distro: rolling
+            env:
+              CLANG_TIDY: true
+
+    env:
+      CXXFLAGS: "-Wall -Wextra -Wwrite-strings -Wunreachable-code -Wpointer-arith -Wredundant-decls"
+      ROS_DISTRO: ${{ matrix.distro }}
+      ROS_REPO: ${{ matrix.repo || 'ros' }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      BASEDIR: /home/runner/work
+      DOCKER_COMMIT: rhaschke/ici:agni_tf_tools-${{ matrix.distro }}-${{ matrix.repo || 'ros' }}
+      CLANG_TIDY: ${{ matrix.env.CLANG_TIDY || 'false' }}
+      CLANG_TIDY_BASE_REF: ${{ github.base_ref || '' }}
+
+    name: "${{ matrix.distro }}${{ matrix.repo != 'ros' && format(' {0}', matrix.repo) || '' }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Cache ccache
+        uses: rhaschke/cache@main
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ env.CACHE_PREFIX }}-${{ github.sha }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ env.CACHE_PREFIX }}-${{ github.sha }}
+            ${{ env.CACHE_PREFIX }}
+        env:
+          CACHE_PREFIX: ccache-${{ matrix.distro }}
+          GHA_CACHE_SAVE: always
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME || github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Fetch cached docker image
+        if: ${{ env.DOCKER_COMMIT && ! env.DOCKER_IMAGE }}
+        run: |
+          if docker pull ${{ env.DOCKER_COMMIT }} ; then
+            echo "DOCKER_IMAGE=$DOCKER_COMMIT" >> $GITHUB_ENV
+          fi
+
+      - name: industrial_ci
+        uses: rhaschke/industrial_ci@master
+
+      - name: Upload docker image as cache
+        if: ${{ env.DOCKER_COMMIT }}
+        run: |
+          docker push ${{ env.DOCKER_COMMIT }} || true
+
+      - name: Upload test artifacts (on failure)
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: test-results-${{ matrix.distro }}
+          path: ${{ env.BASEDIR }}/target_ws/**/test_results/**/*.xml
