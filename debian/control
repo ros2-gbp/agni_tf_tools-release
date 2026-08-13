@@ -1,0 +1,13 @@
+Source: ros-lyrical-agni-tf-tools
+Section: misc
+Priority: optional
+Maintainer: "Robert Haschke" <rhaschke@techfak.uni-bielefeld.de>
+Build-Depends: debhelper (>= 9.0.0), libboost-all-dev, libeigen3-dev, ros-lyrical-ament-cmake, ros-lyrical-angles, ros-lyrical-geometry-msgs, ros-lyrical-interactive-markers, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rviz-common, ros-lyrical-rviz-default-plugins, ros-lyrical-std-msgs, ros-lyrical-tf2, ros-lyrical-tf2-geometry-msgs, ros-lyrical-tf2-ros, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Homepage: http://wiki.ros.org/agni_tf_tools
+Standards-Version: 3.9.2
+
+Package: ros-lyrical-agni-tf-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libboost-all-dev, ros-lyrical-angles, ros-lyrical-geometry-msgs, ros-lyrical-interactive-markers, ros-lyrical-pluginlib, ros-lyrical-rclcpp, ros-lyrical-rviz-common, ros-lyrical-rviz-default-plugins, ros-lyrical-std-msgs, ros-lyrical-tf2, ros-lyrical-tf2-geometry-msgs, ros-lyrical-tf2-ros, ros-lyrical-visualization-msgs, ros-lyrical-ros-workspace
+Description: This package provides a gui program as well as a rviz plugin to publish static transforms.
+ Both support the transformation between various Euler angle representations. The rviz plugin also allows to configure the transform with an interactive marker.
