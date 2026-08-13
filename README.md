@@ -1,3 +1,26 @@
+## agni_tf_tools (rolling) - 1.0.2-1
+
+The packages in the `agni_tf_tools` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --ros-distro rolling agni_tf_tools` on `Thu, 13 Aug 2026 21:39:07 -0000`
+
+The `agni_tf_tools` package was released.
+
+Version of package(s) in repository `agni_tf_tools`:
+
+- upstream repository: https://github.com/ubi-agni/agni_tf_tools.git
+- release repository: https://github.com/ros2-gbp/agni_tf_tools-release.git
+- rosdistro version: `1.0.1-1`
+- old version: `1.0.1-1`
+- new version: `1.0.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.14.3`
+- catkin_pkg version: `1.1.0`
+- rosdep version: `0.26.0`
+- rosdistro version: `1.0.1`
+- vcstools version: `0.1.42`
+
+
 ## agni_tf_tools (rolling) - 1.0.1-1
 
 The packages in the `agni_tf_tools` repository were released into the `rolling` distro by running `/usr/bin/bloom-release --rosdistro rolling agni_tf_tools` on `Sun, 14 Jun 2026 16:41:30 -0000`
